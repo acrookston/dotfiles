@@ -9,7 +9,6 @@ SYMLINKS = %w[
   railsrc
   rspec
   tmux.conf
-  vimrc
 ]
 FILES = []
 
@@ -65,29 +64,8 @@ task :gitconfig do
   config["alias.prune", %(!git remote | xargs -n 1 git remote prune)]
 end
 
-desc "Installs Vundle"
-task :vundle => :vim do
-  unless File.exist?('vim/bundle/vundle')
-    unless system('git clone -q git://github.com/gmarik/vundle.git vim/bundle/vundle')
-      STDERR.puts "Could not clone Vundle. Continuing..."
-    end
-  end
-end
-
-desc "Installs all vundle plugins"
-task :vimplugins => :vundle do
-  unless system('vim -c ":BundleInstall" -c ":qa"')
-    STDERR.puts "Could not automatically install vim bundles. Continuing..."
-  end
-end
-
-desc "Installs vim config"
-task :vim do
-  Dotfile.new('vim').install_symlink
-end
-
 desc "Installs all files"
-task :install => (SYMLINKS + FILES + %w[gitignore gitconfig vundle]) do
+task :install => (SYMLINKS + FILES + %w[gitignore gitconfig]) do
 end
 
 desc "Clears all 'legacy' files (like old symlinks)"
