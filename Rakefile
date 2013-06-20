@@ -73,7 +73,6 @@ HOMEBREW_FORMULAE = %w[
   node
   optipng
   pngcrush
-  pngout
   redis
   sphinx
   the_silver_searcher
