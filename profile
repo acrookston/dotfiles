@@ -70,6 +70,11 @@ function parse_git_branch {
     echo "("${ref#refs/heads/}")"
 }
 
+run_fn() {
+  [[ "$(declare -Ff "$1")" ]] || return
+  echo "$($1)"
+}
+
 RED="\[\033[0;31m\]"
 GREEN="\[\033[0;32m\]"
 YELLOW="\[\033[0;33m\]"
@@ -78,7 +83,7 @@ PURPLE="\[\033[0;35m\]"
 CYAN="\[\033[0;36m\]"
 
 #export PS1='\[\033[33;1m\]\t \[\033[31;1m\]\u \[\033[32m\]\W\[\033[35;1m\]\[\033[32m\] $(ps1_rvm) \$\[\033[00m\] '
-export PS1="$PURPLE\t \w$GREEN\$(ps1_rvm)$YELLOW\$(parse_git_branch)$CYAN\$\[\033[00m\] "
+export PS1="$PURPLE\t \w$GREEN\$( run_fn \"ps1_rvm\" )$YELLOW\$( run_fn \"parse_git_branch\" )$CYAN\$\[\033[00m\] "
 export LSCOLORS=dxfxcxdxbxegedabagacad
 
 export FLEX_HOME=/usr/local/flex3/
