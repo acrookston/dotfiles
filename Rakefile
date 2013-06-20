@@ -42,9 +42,23 @@ task :gitconfig do
   config["push.default", "tracking"]
   config["color.ui", "true"]
 
-  config["user.name", "Magnus Bergmark"]
-  config["user.email", "magnus.bergmark@gmail.com"]
-  config["github.user", "Mange"]
+  confirm = 'n'
+  while (confirm != 'y')
+    puts "Git config setup:"
+    print "What's your name? "
+    name = $stdin.gets.chomp
+    print "What's your email? "
+    email = $stdin.gets.chomp
+    print "What's your Github username? "
+    username = $stdin.gets.chomp
+
+    puts "\nName: #{name}\nEmail: #{email}\nGithub username: #{username}"
+    print "Is this information correct? [y/n] "
+    confirm = $stdin.gets.chomp
+  end
+  config["user.name", name]
+  config["user.email", email]
+  config["github.user", username]
 
   config["color.branch.current", "bold green"]
   config["color.branch.local", "green"]
@@ -66,6 +80,7 @@ end
 
 desc "Installs all files"
 task :install => (SYMLINKS + FILES + %w[gitignore gitconfig]) do
+  puts "All done!"
 end
 
 desc "Clears all 'legacy' files (like old symlinks)"
