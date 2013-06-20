@@ -47,6 +47,8 @@ GIT_ALIASES = {
   :prune => %(!git remote | xargs -n 1 git remote prune)
 }
 
+namspace :config do
+
 SYMLINKS.each do |file|
   desc "Installs #{file} by symlinking it inside your home"
   task file do
@@ -135,4 +137,4 @@ task :clear_symlinks do
     Dotfile.new(file).delete_target
   end
 end
-
+end
