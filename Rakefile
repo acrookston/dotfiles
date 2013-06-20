@@ -188,13 +188,13 @@ task :confirm_xcode do
 end
 
 task :pause do
-  puts "Please adress any issues above manually (in a different terminal window) then press enter to continue."
+  puts ">>> Please adress any issues above manually (in a different terminal window) then press enter to continue."
   $stdin.gets
 end
 
 desc "Install Homebrew"
 task :install_homebrew do
-  puts "=> Installing Homebrew"
+  puts ">>> Installing Homebrew"
   system 'ruby -e "$(curl -fsSL https://raw.github.com/mxcl/homebrew/go)"'
   puts "Installed. Checking Homebrew doctor"
   system 'brew doctor'
@@ -202,17 +202,22 @@ end
 
 desc "Install Homebrew formulae"
 task :install_formulae do
-  puts "=> Homebrew installing #{HOMEBREW_FORMULAE.join(' ')}"
+  puts ">>> Homebrew installing #{HOMEBREW_FORMULAE.join(' ')}"
   system "brew install #{HOMEBREW_FORMULAE.join(' ')}"
+end
+
+desc "Show homebrew info for all formuale"
+task :show_brew_info do
+  system "brew info #{HOMEBREW_FORMULAE.join(' ')}"
 end
 
 desc "Install Janus"
 task :install_janus do
-  puts "Installing Janus"
+  puts ">>> Installing Janus"
   system 'curl -Lo- https://bit.ly/janus-bootstrap | bash'
 
   janus_dir = "#{ENV['HOME']}/.janus"
-  FileUtil.mkdir janus_dir unless File.directory?(janus_dir)
+  FileUtils.mkdir janus_dir unless File.directory?(janus_dir)
   system "cd #{janus_dir} && git clone http://github.com/flazz/vim-colorschemes colorschemes"
 end
 
@@ -221,6 +226,7 @@ task :install => [:confirm_xcode,
                   :install_homebrew,
                   :pause,
                   :install_formulae,
+                  :show_brew_info,
                   :pause,
                   :install_janus] do
 end
