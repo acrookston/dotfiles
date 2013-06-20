@@ -95,6 +95,8 @@ task :gitconfig do
   config["user.email", email]
   config["github.user", username]
 
+  config["gist.private", "yes"]
+
   config["color.branch.current", "bold green"]
   config["color.branch.local", "green"]
   config["color.branch.remote", "blue"]
