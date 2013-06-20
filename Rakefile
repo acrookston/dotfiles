@@ -9,6 +9,8 @@ SYMLINKS = %w[
   railsrc
   rspec
   tmux.conf
+  vimrc.before
+  vimrc.after
 ]
 FILES = []
 

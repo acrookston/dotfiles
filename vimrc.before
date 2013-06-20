@@ -1,0 +1,307 @@
+" General
+set nocompatible
+set history=1000
+set autoread                          " reload files (no local changes only)
+set modeline                          " make sure modeline support is enabled
+filetype plugin indent on             " load filetype plugin
+set isk+=_,$,@,%,#,-                  " non word dividers
+set noerrorbells visualbell t_vb=
+autocmd GUIEnter * set visualbell t_vb=
+
+" UTF-8 default encoding
+set enc=utf-8
+
+" ----------------------------------------------------------------------------
+"  Platform detection
+" ----------------------------------------------------------------------------
+
+let s:platform = system("uname")
+let s:on_linux = s:platform =~? "linux"
+let s:on_mac   = has('macunix') || s:platform =~? "Darwin"
+
+" ----------------------------------------------------------------------------
+" Custom filetypes
+" ----------------------------------------------------------------------------
+
+autocmd BufNewFile,BufRead *.mxml set filetype=mxml
+autocmd BufNewFile,BufRead *.as set filetype=actionscript
+
+autocmd BufNewFile,BufRead *.mxml compiler flex
+autocmd BufNewFile,BufRead *.as compiler flex
+
+" ----------------------------------------------------------------------------
+"  Tabularize
+" ----------------------------------------------------------------------------
+
+if exists(":Tabularize")
+  nmap <Leader>a=> :Tabularize /=><CR>
+  vmap <Leader>a=> :Tabularize /=><CR>
+  nmap <Leader>a= :Tabularize /=<CR>
+  vmap <Leader>a= :Tabularize /=<CR>
+  nmap <Leader>a: :Tabularize /:\zs<CR>
+  vmap <Leader>a: :Tabularize /:\zs<CR>
+endif
+
+" ----------------------------------------------------------------------------
+"  GUI
+" ----------------------------------------------------------------------------
+
+if has("gui_running")
+  set background=dark
+  color desert
+
+  if has("gui_macvim")
+    set guifont=Menlo:h12
+  else
+    set guifont=DejaVu\ Sans\ Mono\ 9
+  endif
+
+  " Hide the toolbar
+  set go-=T
+
+  " Default window size
+  if &lines < 59
+    set lines=59
+  endif
+
+  if &columns < 110
+    set columns=110
+  endif
+else
+  set background=dark
+  color desert
+endif
+
+
+" ----------------------------------------------------------------------------
+"  UI
+" ----------------------------------------------------------------------------
+
+"set ruler                  " show the cursor position all the time
+set nolazyredraw           " turn off lazy redraw
+set relativenumber         " relative line numbers
+set ch=1                   " command line height
+set backspace=2            " allow backspacing over everything in insert mode
+set whichwrap+=<,>,h,l,[,] " backspace and cursor keys wrap to
+set shortmess=filtIoOA     " shorten messages
+set report=0               " tell us about changes
+set nostartofline          " don't jump to the start of line when scrolling
+
+set wildmenu               " turn on wild menu
+set wildmode=list:longest,full
+set infercase
+set completeopt=longest,menu,menuone
+set wildignore+=*.o,*.obj,*.pyc,*.DS_STORE,*.sqlite3,*.scssc,*/tmp/*,*.so,*.swp,*.zip
+
+set statusline=%<%f\ %h%m%r%{fugitive#statusline()}%=%-14.(%l,%c%V%)\ %P
+
+
+" ----------------------------------------------------------------------------
+" Text Formatting
+" ----------------------------------------------------------------------------
+
+set autoindent             " automatic indent new lines
+set smartindent            " be smart about it
+set nowrap                 " do not wrap lines
+set softtabstop=2          " yep, two
+set shiftwidth=2           " ..
+set shiftround             " ... + > = .... (4) instead of ..... (5)
+set tabstop=4
+set expandtab              " expand tabs to spaces
+set nosmarttab             " fuck tabs
+set formatoptions+=n       " support for numbered/bullet lists
+set formatoptions-=t       " never wrap code
+set textwidth=80           " wrap at 80 chars by default
+set virtualedit=block      " allow virtual edit in visual block ..
+
+
+
+" Wrap text sometimes
+autocmd BufRead *.{md,markdown,txt} set formatoptions+=t
+
+" Handlebars is HTML
+autocmd BufRead *.{hjs,handlebars} set ft=html
+
+" JBuilder is Ruby
+autocmd BufRead *.jbuilder set ft=ruby
+
+" Stylus is Sass
+autocmd BufRead *.styl set ft=sass
+
+" Use hard tabs when absolutely necessary
+autocmd FileType make set noexpandtab
+
+" Syntax highlighting
+syntax on
+
+" Highlight trailing whitespace
+set list listchars=trail:.,tab:>.
+
+" Search & Replace
+set ignorecase
+set smartcase
+set incsearch
+
+
+
+" ----------------------------------------------------------------------------
+"  Navigation
+" ----------------------------------------------------------------------------
+
+" Tab navigation
+map <D-S-]> gt
+map <D-S-[> gT
+map <D-S-1> 1gt
+map <D-S-2> 2gt
+map <D-S-3> 3gt
+map <D-S-4> 4gt
+map <D-S-5> 5gt
+map <D-S-6> 6gt
+map <D-S-7> 7gt
+map <D-S-8> 8gt
+map <D-S-9> 9gt
+map <D-S-0> :tablast<CR>
+
+" Split-screen navigation
+map <C-J> <C-W>j
+map <C-K> <C-W>k
+map <C-H> <C-W>h
+map <C-L> <C-W>l
+set wmh=0 " Allow splits to be zero-height
+
+" , is easier to reach than backspace
+let mapleader=","
+
+
+" ----------------------------------------------------------------------------
+"  CtrlP
+" ----------------------------------------------------------------------------
+
+nmap <leader>f :CtrlP<CR>
+nmap <leader>F :ClearCtrlPCache<CR>
+nmap <leader>b :CtrlPBuffer<CR>
+let g:ctrlp_custom_ignore = {
+  \ 'dir':  'tmp$\|vendor/bundle$\|\.git$\|\.bundle$\|public/images$\|public/system$'
+  \ }
+
+" ----------------------------------------------------------------------------
+"  .vimrc editing
+" ----------------------------------------------------------------------------
+
+" Automatically reload .vimrc after save
+autocmd! BufWritePost .vimrc source %
+nmap <leader>v :tabedit $MYVIMRC<CR>
+
+" ----------------------------------------------------------------------------
+"  Git (Fugitive)
+" ----------------------------------------------------------------------------
+
+" Auto-clean fugitive buffers
+autocmd BufReadPost fugitive://* set bufhidden=delete
+
+nnoremap <leader>gd :Gdiff<cr>
+nnoremap <leader>gD :diffoff!<cr><c-w>h:bd<cr>
+
+" nmap <leader>g :Ggrep<cr>
+nmap <leader>g :silent Ggrep
+
+" nmap <leader>k :Ack
+
+" ----------------------------------------------------------------------------
+"  Gist
+" ----------------------------------------------------------------------------
+
+let g:gist_detect_filetype = 1
+
+if s:on_mac
+  let g:gist_clip_command = 'pbcopy'
+elseif s:on_linux
+  let g:gist_clip_command = 'xclip -selection clipboard'
+endif
+
+" ----------------------------------------------------------------------------
+"  Relative :edit shortcuts
+" ----------------------------------------------------------------------------
+
+map <leader>ew :e <C-R>=expand("%:p:h") . "/" <CR>
+map <leader>es :sp <C-R>=expand("%:p:h") . "/" <CR>
+map <leader>ev :vsp <C-R>=expand("%:p:h") . "/" <CR>
+map <leader>et :tabe <C-R>=expand("%:p:h") . "/" <CR>
+
+" NERD_tree drawer toggle
+map <leader>d :execute 'NERDTreeToggle ' . getcwd()<CR>
+
+" Scratch toggle (scratch.vim)
+function! ToggleScratch()
+  if expand('%') == g:ScratchBufferName
+    quit
+  else
+    Sscratch
+  endif
+endfunction
+
+map <leader>s :call ToggleScratch()<CR>
+
+" use ghc functionality for haskell files
+au Bufenter *.hs compiler ghc
+
+" Configure browser for haskell_doc.vim
+let g:haddock_browser = "open"
+let g:haddock_browser_callformat = "%s %s"
+
+
+" ---------------------------------------------------------------------------
+"  Strip all trailing whitespace in file
+" ---------------------------------------------------------------------------
+
+function! StripWhitespace()
+    exec ':%s/ \+$//gc'
+endfunction
+map <leader>w :call StripWhitespace()<CR>
+
+" Use ack for grep
+set grepprg=ack
+set grepformat=%f:%l:%m
+
+" Backup
+set backupdir=~/.vim/backup
+set directory=~/.vim/swap
+set backup
+
+" ---------------------------------------------------------------------------
+"  Rename current file (hat tip @garybernhardt)
+" ---------------------------------------------------------------------------
+
+function! RenameFile()
+    let old_name = expand('%')
+    let new_name = input('New file name: ', expand('%'), 'file')
+    if new_name != '' && new_name != old_name
+        exec ':saveas ' . new_name
+        exec ':silent !rm ' . old_name
+        redraw!
+    endif
+endfunction
+map <leader>n :call RenameFile()<cr>
+
+" ---------------------------------------------------------------------------
+"  Multipurpose tab key: (hat tip @garybernhardt, again)
+"    Indent if we're at the beginning of a line. Else, do completion.
+" ---------------------------------------------------------------------------
+
+function! InsertTabWrapper()
+    let col = col('.') - 1
+    if !col || getline('.')[col - 1] !~ '\k'
+        return "\<tab>"
+    else
+        return "\<c-p>"
+    endif
+endfunction
+inoremap <tab> <c-r>=InsertTabWrapper()<cr>
+inoremap <s-tab> <c-n>
+
+
+" Clumbsy fingers doesn't save changes
+:command WQ wq
+:command Wq wq
+:command W w
+:command Q q
