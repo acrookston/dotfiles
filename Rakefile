@@ -81,7 +81,7 @@ HOMEBREW_FORMULAE = %w[
   wget
 ]
 
-namspace :config do
+namespace :config do
 
 SYMLINKS.each do |file|
   desc "Installs #{file} by symlinking it inside your home"
