@@ -1,0 +1,44 @@
+TM_GIT         = "/usr/bin/git"
+excludeFiles   = "*.{so,pyc,o,scssc,log}"
+excludeDirectories = "build,dist,tmp,log"
+
+# show the path to the current tab's file in the window title 
+# (replace the 2 instances of 'username' in the string below 
+# with your mac username).
+windowTitle    = "$TM_DISPLAYNAME${TM_DIRECTORY/\A(?:\/Users\/andy\w+\/?(.*)|(.+))\z/${2:? – ${2/\A\/Users\/andy/~/}:${1/\A(?=.)/ – /}}/}"
+
+fontName         = "Menlo" 
+fontSize         = 11
+tabSize          = 2
+softTabs         = true
+showInvisibles   = true
+wrapColumn       = "Use Window Frame"
+sofWrap          = false
+spellChecking    = true
+spellingLanguage = 'en'
+
+
+# File type specific configuration
+#
+[ *.{txt,md,mdown,markdown} ]
+spellChecking  = true
+tabSize        = 2
+
+[ text ]
+showInvisibles   = true
+
+[ .git/COMMIT_EDITMSG ]
+spellChecking    = true
+spellingLanguage = 'en'
+
+[ *.{icns,ico,jpg,jpeg,m4v,nib,pdf,png,psd,pyc,rtf,tif,tiff,xib,wob,wff,woff} ]
+binary           = true
+
+[ "{README,INSTALL,LICENSE,TODO}" ]
+fileType         = "text.plain"
+
+[ *.scss ]
+fileType         = "SCSS"
+
+[ *.sass ]
+fileType         = "Ruby Sass"

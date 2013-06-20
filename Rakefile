@@ -11,6 +11,7 @@ SYMLINKS = %w[
   tmux.conf
   vimrc.before
   vimrc.after
+  tm_properties
 ]
 FILES = []
 
