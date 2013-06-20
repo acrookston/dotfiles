@@ -49,6 +49,36 @@ GIT_ALIASES = {
   :prune => %(!git remote | xargs -n 1 git remote prune)
 }
 
+HOMEBREW_FORMULAE = %w[
+  ack
+  advancecomp
+  curl
+  elasticsearch
+  gist
+  git
+  gnutls
+  growlnotify
+  hiredis
+  imagemagick
+  intltool
+  libevent
+  links
+  macvim
+  mongodb
+  mysql
+  nginx
+  ngrep
+  nmap
+  node
+  optipng
+  pngcrush
+  pngout
+  redis
+  sphinx
+  the_silver_searcher
+  wget
+]
+
 namspace :config do
 
 SYMLINKS.each do |file|
@@ -138,5 +168,59 @@ task :clear_symlinks do
   SYMLINKS.each do |file|
     Dotfile.new(file).delete_target
   end
+end
+end
+
+
+namespace :system do
+
+task :confirm_xcode do
+  print "Did you install Xcode AND Xcode CLI Tools? [y/n] "
+  answer = $stdin.gets || 'y'
+
+  if answer.chomp != 'y'
+    puts "Install Xcode from Mac App Store and CLI Tools from https://developer.apple.com/downloads/index.action"
+    system 'open https://developer.apple.com/downloads/index.action'
+    system 'open https://itunes.apple.com/se/app/xcode/id497799835?l=en&mt=12'
+    exit
+  end
+end
+
+task :pause do
+  puts "Please adress any issues above manually (in a different terminal window) then press enter to continue."
+  $stdin.gets
+end
+
+desc "Install Homebrew"
+task :install_homebrew do
+  puts "=> Installing Homebrew"
+  system 'ruby -e "$(curl -fsSL https://raw.github.com/mxcl/homebrew/go)"'
+  puts "Installed. Checking Homebrew doctor"
+  system 'brew doctor'
+end
+
+desc "Install Homebrew formulae"
+task :install_formulae do
+  puts "=> Homebrew installing #{HOMEBREW_FORMULAE.join(' ')}"
+  system "brew install #{HOMEBREW_FORMULAE.join(' ')}"
+end
+
+desc "Install Janus"
+task :install_janus do
+  puts "Installing Janus"
+  system 'curl -Lo- https://bit.ly/janus-bootstrap | bash'
+
+  janus_dir = "#{ENV['HOME']}/.janus"
+  FileUtil.mkdir janus_dir unless File.directory?(janus_dir)
+  system "cd #{janus_dir} && git clone http://github.com/flazz/vim-colorschemes colorschemes"
+end
+
+desc "Start installation of a new system"
+task :install => [:confirm_xcode,
+                  :install_homebrew,
+                  :pause,
+                  :install_formulae,
+                  :pause,
+                  :install_janus] do
 end
 end
