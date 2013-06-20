@@ -59,7 +59,6 @@ HOMEBREW_FORMULAE = %w[
   gist
   git
   gnutls
-  growlnotify
   hiredis
   imagemagick
   intltool
