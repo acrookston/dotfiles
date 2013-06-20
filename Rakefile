@@ -12,6 +12,7 @@ SYMLINKS = %w[
   vimrc.before
   vimrc.after
   tm_properties
+  profile
 ]
 FILES = []
 
