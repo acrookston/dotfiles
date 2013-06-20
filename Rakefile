@@ -10,11 +10,6 @@ SYMLINKS = %w[
   rspec
   tmux.conf
   vimrc
-  zshenv
-  zshprofile
-  zshrc
-  zshrc.d
-  zsh
 ]
 FILES = []
 
@@ -92,20 +87,13 @@ task :vim do
 end
 
 desc "Installs all files"
-task :install => (SYMLINKS + FILES + %w[gitignore zsh gitconfig vundle]) do
-  if ENV['SHELL'] !~ /zsh/
-    STDERR.puts "Warning: You seem to be using a shell different from zsh (#{ENV['SHELL']})"
-    STDERR.puts "Fix this by running:"
-    STDERR.puts "  chsh -s `which zsh`"
-  end
+task :install => (SYMLINKS + FILES + %w[gitignore gitconfig vundle]) do
 end
 
 desc "Clears all 'legacy' files (like old symlinks)"
 task :cleanup do
   Dotfile.new('screenrc').delete_target(:only_symlink => true)
   Dotfile.new('pentadactylrc').delete_target(:only_symlink => true)
-  # Clean up backup created after converting ~/.zsh to a symlink
-  `[ -d ~/.zsh~ ] && mv ~/.zsh\~/* ~/.zsh && rmdir ~/.zsh~`
 end
 
 desc "Install and clean up old files"
