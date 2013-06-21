@@ -54,7 +54,6 @@ GIT_ALIASES = {
 HOMEBREW_FORMULAE = %w[
   ack
   advancecomp
-  curl
   elasticsearch
   gist
   git
