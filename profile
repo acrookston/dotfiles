@@ -65,6 +65,10 @@ if [ -f $HOME/.rvm/contrib/ps1_functions ]; then
   source "$HOME/.rvm/contrib/ps1_functions"
 fi
 
+if [ -f "/usr/local/etc/bash_completion.d" ]; then
+  source "/usr/local/etc/bash_completion.d"
+fi
+
 function parse_git_branch {
   ref=$(git symbolic-ref HEAD 2> /dev/null) || return
     echo "("${ref#refs/heads/}")"
