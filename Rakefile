@@ -66,6 +66,7 @@ HOMEBREW_FORMULAE = %w[
   macvim
   mongodb
   mysql
+  mysql-connector-c
   nginx
   ngrep
   nmap
