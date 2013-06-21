@@ -108,7 +108,7 @@ task :gitconfig do
   exec = lambda { |command| system(*command) or STDERR.puts "Command failed: #{command.join(' ')}" }
   config = lambda { |setting, value| exec[['git', 'config', '--global', setting, value]] }
 
-  config["push.default", "tracking"]
+  config["push.default", "current"]
   config["color.ui", "true"]
 
   confirm = 'n'
