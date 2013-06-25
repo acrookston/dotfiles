@@ -92,31 +92,31 @@ export PATH=${PATH}:/usr/local/sbin:${HOME}/bin
 
 # Mysql
 MYSQL_HOME=/usr/local/mysql
-if [ -f $MYSQL_HOME ]; then
+if [ -d $MYSQL_HOME ]; then
   export PATH=${PATH}:${MYSQL_HOME}/bin
 fi
 
 # Mongodb
 MONGO_HOME=/usr/local/mongodb
-if [ -f $MONGO_HOME ]; then
+if [ -d $MONGO_HOME ]; then
   export PATH=${PATH}:${MONGO_HOME}/bin
 fi
 
 # Flash/Flex
 export FLEX_HOME=/usr/local/flex3
-if [ -f $FLEX_HOME ]; then
+if [ -d $FLEX_HOME ]; then
   export PATH=${PATH}:${FLEX_HOME}/bin
 fi
 
 # ImageMagick
 IMAGE_MAGICK_HOME=/usr/local/Cellar/imagemagick/6.7.1-1/bin/
-if [ -f $IMAGE_MAGIC_HOME ]; then
+if [ -d $IMAGE_MAGIC_HOME ]; then
   export PATH=${PATH}:${IMAGE_MAGICK_HOME}
 fi
 
 # Android
 export ANDROID_HOME=${HOME}/code/adt-bundle-mac
-if [ -f $ANDROID_HOME ]; then
+if [ -d $ANDROID_HOME ]; then
   export PATH=${PATH}:${ANDROID_HOME}/sdk/platform-tools:${ANDROID_HOME}/sdk/tools
 fi
 
