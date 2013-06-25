@@ -95,10 +95,16 @@ export FLEX_HOME=/usr/local/flex3/
 export PATH=${PATH}:${HOME}/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/sbin:/usr/local/mysql/bin:/usr/local/mongodb/bin:${FLEX_HOME}/bin
 
 # ImageMagick
-export PATH=${PATH}:/usr/local/Cellar/imagemagick/6.7.1-1/bin/
+IMAGE_MAGICK_HOME=/usr/local/Cellar/imagemagick/6.7.1-1/bin/
+if [ -f $IMAGE_MAGIC_HOME ]; then
+  export PATH=${PATH}:${IMAGE_MAGICK_HOME}
+fi
 
 # Android
-export PATH=${PATH}:~/code/adt-bundle-mac/sdk/platform-tools/
+export ANDROID_HOME=${HOME}/code/adt-bundle-mac
+if [ -f $ANDROID_HOME ]; then
+  export PATH=${PATH}:${ANDROID_HOME}/sdk/platform-tools:${ANDROID_HOME}/sdk/tools
+fi
 
 export EDITOR='vim'
 export VISUAL='vim'
