@@ -109,9 +109,9 @@ if [ -d $FLEX_HOME ]; then
 fi
 
 # ImageMagick
-IMAGE_MAGICK_HOME=/usr/local/Cellar/imagemagick/6.7.1-1/bin/
+IMAGE_MAGICK_HOME=/usr/local/Cellar/imagemagick/6.7.1-1
 if [ -d $IMAGE_MAGIC_HOME ]; then
-  export PATH=${PATH}:${IMAGE_MAGICK_HOME}
+  export PATH=${PATH}:${IMAGE_MAGICK_HOME}/bin
 fi
 
 # Android
