@@ -15,8 +15,6 @@ alias flushdns="dscacheutil -flushcache"
 alias updatedb="sudo /usr/libexec/locate.updatedb"
 alias netstat_proc="sudo lsof -i -P"
 
-alias ssh="ssh -At"
-
 # GIT (TODO: Clean this up, conflicts w/ git aliases)
 alias g='git'
 alias gs='git status'
