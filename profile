@@ -90,9 +90,13 @@ CYAN="\[\033[0;36m\]"
 export PS1="$PURPLE\t \w$GREEN\$( run_fn \"ps1_rvm\" )$YELLOW\$( run_fn \"parse_git_branch\" )$CYAN\$\[\033[00m\] "
 export LSCOLORS=dxfxcxdxbxegedabagacad
 
-export FLEX_HOME=/usr/local/flex3/
+export PATH=${PATH}:${HOME}/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/sbin:/usr/local/mysql/bin:/usr/local/mongodb/bin
 
-export PATH=${PATH}:${HOME}/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/sbin:/usr/local/mysql/bin:/usr/local/mongodb/bin:${FLEX_HOME}/bin
+# Flash/Flex
+export FLEX_HOME=/usr/local/flex3
+if [ -f $FLEX_HOME ]; then
+  export PATH=${PATH}:${FLEX_HOME}/bin
+fi
 
 # ImageMagick
 IMAGE_MAGICK_HOME=/usr/local/Cellar/imagemagick/6.7.1-1/bin/
