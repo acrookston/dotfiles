@@ -88,7 +88,19 @@ CYAN="\[\033[0;36m\]"
 export PS1="$PURPLE\t \w$GREEN\$( run_fn \"ps1_rvm\" )$YELLOW\$( run_fn \"parse_git_branch\" )$CYAN\$\[\033[00m\] "
 export LSCOLORS=dxfxcxdxbxegedabagacad
 
-export PATH=${PATH}:${HOME}/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/sbin:/usr/local/mysql/bin:/usr/local/mongodb/bin
+export PATH=${PATH}:/usr/local/sbin:${HOME}/bin
+
+# Mysql
+MYSQL_HOME=/usr/local/mysql
+if [ -f $MYSQL_HOME ]; then
+  export PATH=${PATH}:${MYSQL_HOME}/bin
+fi
+
+# Mongodb
+MONGO_HOME=/usr/local/mongodb
+if [ -f $MONGO_HOME ]; then
+  export PATH=${PATH}:${MONGO_HOME}/bin
+fi
 
 # Flash/Flex
 export FLEX_HOME=/usr/local/flex3
