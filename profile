@@ -5,7 +5,6 @@ alias l="ls"
 alias ll='ls -Ghlk'
 alias la='ls -GAhlka'
 alias ..="cd .."
-alias G=" | grep "
 
 # freaking ios simulator is hidden away in Xcode 4.3.1
 alias ios="open '/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/Applications/iPhone Simulator.app'"
