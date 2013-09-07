@@ -128,6 +128,12 @@ if [ -d $ANDROID_HOME ]; then
   export PATH=${PATH}:${ANDROID_HOME}/sdk/platform-tools:${ANDROID_HOME}/sdk/tools
 fi
 
+# Node
+NPM=/usr/local/share/npm/bin
+if [ -d $NPM ]; then
+  export PATH=${PATH}:${NPM}
+fi
+
 export EDITOR='vim'
 export VISUAL='vim'
 export LESSEDIT='vim'
