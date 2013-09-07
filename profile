@@ -147,3 +147,7 @@ alias crushpng="git diff --name-only origin/master | grep '\.png$' | xargs -I xx
 
 # This loads RVM into a shell session.
 [[ -s "/Users/andy/.rvm/scripts/rvm" ]] && source "/Users/andy/.rvm/scripts/rvm"
+
+# Load rbenv
+if which rbenv > /dev/null; then eval "$(rbenv init -)"; fi
+
