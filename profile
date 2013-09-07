@@ -92,7 +92,6 @@ BLUE="\[\033[0;34m\]"
 PURPLE="\[\033[0;35m\]"
 CYAN="\[\033[0;36m\]"
 
-#export PS1='\[\033[33;1m\]\t \[\033[31;1m\]\u \[\033[32m\]\W\[\033[35;1m\]\[\033[32m\] $(ps1_rvm) \$\[\033[00m\] '
 export PS1="$PURPLE\t \w$GREEN \$( run_fn \"ps1_rvm\" )\$( run_fn \"__rbenv_ps1\" )$YELLOW\$( run_fn \"parse_git_branch\" )$CYAN\$\[\033[00m\] "
 export LSCOLORS=dxfxcxdxbxegedabagacad
 
