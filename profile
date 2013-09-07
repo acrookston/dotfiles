@@ -14,6 +14,9 @@ alias flushdns="dscacheutil -flushcache"
 alias updatedb="sudo /usr/libexec/locate.updatedb"
 alias netstat_proc="sudo lsof -i -P"
 
+# For OS X terminal title
+PROMPT_COMMAND='echo -ne "\033]0; ${PWD##*/}\007"'
+
 # GIT (TODO: Clean this up, conflicts w/ git aliases)
 alias g='git'
 alias gs='git status'
