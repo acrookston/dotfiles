@@ -194,7 +194,7 @@ end
 desc "Install Homebrew"
 task :install_homebrew do
   puts ">>> Installing Homebrew"
-  system 'ruby -e "$(curl -fsSL https://raw.github.com/mxcl/homebrew/go)"'
+  system 'ruby -e "$(curl -fsSL https://raw.github.com/Homebrew/homebrew/go/install)"'
   puts "Installed. Checking Homebrew doctor"
   system 'brew doctor'
 end
