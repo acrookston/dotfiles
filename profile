@@ -47,8 +47,8 @@ alias gls="git log --grep "
 alias gwf='git show --pretty="format:" --name-only'
 alias gsearch="git log --grep [query] | sed -n '/^commit/p' | cut -d\  -f 2 | xargs git show"
 
-export GITHUB_USER=$(security find-generic-password -s github.password | grep acct | cut -d= -f2 | tr -d \")
-export GITHUB_PASSWORD=$(security find-generic-password -gs github.password 2>&1 >/dev/null | cut -d\  -f2 | tr -d \")
+# export GITHUB_USER=$(security find-generic-password -s github.password | grep acct | cut -d= -f2 | tr -d \")
+# export GITHUB_PASSWORD=$(security find-generic-password -gs github.password 2>&1 >/dev/null | cut -d\  -f2 | tr -d \")
 
 
 # Ruby/Rails/rake
@@ -76,8 +76,10 @@ function parse_git_branch {
 
 __rbenv_ps1 ()
 {
-    rbenv_ruby_version=`rbenv version | sed -e 's/ .*//'`
-    printf $rbenv_ruby_version
+    if which rbenv > /dev/null; then
+      rbenv_ruby_version=`rbenv version | sed -e 's/ .*//'`
+      printf $rbenv_ruby_version
+    fi
 }
 
 run_fn() {
@@ -151,3 +153,5 @@ alias crushpng="git diff --name-only origin/master | grep '\.png$' | xargs -I xx
 # Load rbenv
 if which rbenv > /dev/null; then eval "$(rbenv init -)"; fi
 
+
+PATH=$PATH:$HOME/.rvm/bin # Add RVM to PATH for scripting
