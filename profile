@@ -59,6 +59,7 @@ alias rsc="rake spec cucumber"
 alias rs="rake spec"
 alias rc="rake cucumber"
 alias brake="bundle exec rake"
+alias brspec="bundle exec rspec"
 alias cap="bundle exec cap"
 
 if [ -f $HOME/.rvm/contrib/ps1_functions ]; then
@@ -155,3 +156,5 @@ if which rbenv > /dev/null; then eval "$(rbenv init -)"; fi
 
 
 PATH=$PATH:$HOME/.rvm/bin # Add RVM to PATH for scripting
+
+export GPG_TTY=$(tty)
