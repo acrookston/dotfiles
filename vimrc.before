@@ -125,6 +125,9 @@ autocmd BufRead *.{hjs,handlebars} set ft=html
 " JBuilder is Ruby
 autocmd BufRead *.jbuilder set ft=ruby
 
+" Capistrano is Ruby
+autocmd BufRead *.cap set ft=ruby
+
 " Stylus is Sass
 autocmd BufRead *.styl set ft=sass
 
@@ -181,8 +184,8 @@ nmap <leader>f :CtrlP<CR>
 nmap <leader>F :ClearCtrlPCache<CR>
 nmap <leader>b :CtrlPBuffer<CR>
 let g:ctrlp_custom_ignore = {
-  \ 'dir':  'tmp$\|vendor/bundle$\|\.git$\|\.bundle$\|public/images$\|public/system$'
-  \ }
+\ 'dir': 'node_modules\|tmp$\|vendor/bundle$\|\.git$\|\.bundle$\|public/images$\|public/system$',
+\ 'file': '' }
 
 " ----------------------------------------------------------------------------
 "  .vimrc editing
@@ -305,3 +308,16 @@ inoremap <s-tab> <c-n>
 :command Wq wq
 :command W w
 :command Q q
+
+
+" Remap yank and paste http://stackoverflow.com/questions/54255/in-vim-is-there-a-way-to-delete-without-putting-text-in-the-register
+" set clipboard=unnamed or set clipboard=unnamedplus, which changes the default clipboard to * or +, respectively
+" noremap  y "*y
+" noremap  Y "*Y
+" noremap  p "*p
+" noremap  P "*P
+" vnoremap y "*y
+" vnoremap Y "*Y
+" vnoremap p "*p
+" vnoremap P "*P
+
