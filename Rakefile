@@ -52,6 +52,7 @@ GIT_ALIASES = {
 }
 
 HOMEBREW_FORMULAE = %w[
+  direnv
   ack
   advancecomp
   elasticsearch
