@@ -1,0 +1,41 @@
+#!/bin/sh
+
+if [ -z "$1" ]
+  then
+    echo "Usage: git-purge [branch]"
+    exit
+fi
+
+if [ "master" == "$1" ]
+  then
+    echo "ERROR! Are you insane?! Don't delete master!"
+    exit
+fi
+
+ref=$(git symbolic-ref HEAD 2> /dev/null)
+current=${ref##*/}
+if [ "$current" == "$1" ]
+  then
+    echo "Abort! $1 is current branch. Checkout another branch first."
+    exit
+fi
+
+read -p "[$1] Destroy local and remote branch (y/n)? " choice
+case "$choice" in
+  y|Y )
+    echo "-> git push origin --delete $1"
+    `git push origin --delete $1`
+    echo "-> git branch -D $1";
+    `git branch -D $1`
+    echo "DONE"
+  ;;
+  n|N ) echo "Aborted";;
+  * ) echo "Abort! Invalid input: $choice";;
+esac
+
+# Alternative allows enter as Yes
+#read -r -p "Are you sure? [Y/n]" response
+#response=${response,,} # tolower
+#if [[ $response =~ ^(yes|y| ) ]] | [ -z $response ]; then
+#   your-action-here
+#fi
