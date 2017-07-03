@@ -34,14 +34,16 @@ alias gdo='git diff origin/master'
 alias gf='git fetch'
 alias gp='git push'
 alias gt='git stash'
+alias gb='git symbolic-ref HEAD'
 #alias gsd="git stash show -p | git apply && git stash drop" # stash pop on dirty tree
 alias gr='git rebase'
 alias gri='git rebase -i'
 alias griom='git rebase -i origin/master'
 alias grom='git rebase origin/master'
 alias gromm='git rebase origin/master master'
-alias ggraph='git log --all --decorate --graph --pretty=oneline --abbrev-commit'
-alias gl="ggraph"
+alias ggraph='git graph'
+alias gl="git graph"
+alias gi="git list"
 alias glg="git log --decorate --pretty=oneline --abbrev-commit --grep "
 alias gls="git log --grep "
 alias gwf='git show --pretty="format:" --name-only'
@@ -75,8 +77,7 @@ function parse_git_branch {
     echo "("${ref#refs/heads/}")"
 }
 
-__rbenv_ps1 ()
-{
+__rbenv_ps1 () {
     if which rbenv > /dev/null; then
       rbenv_ruby_version=`rbenv version | sed -e 's/ .*//'`
       printf $rbenv_ruby_version
@@ -113,7 +114,8 @@ if [ -d $MONGO_HOME ]; then
 fi
 
 # Flash/Flex
-export FLEX_HOME=/usr/local/flex3
+export FLEXPATH=${HOME}/code/flex_4_13
+export FLEX_HOME=${FLEXPATH}
 if [ -d $FLEX_HOME ]; then
   export PATH=${PATH}:${FLEX_HOME}/bin
 fi
@@ -126,8 +128,8 @@ fi
 
 # Android
 export ANDROID_HOME=${HOME}/code/adt-bundle-mac
-if [ -d $ANDROID_HOME ]; then
-  export PATH=${PATH}:${ANDROID_HOME}/sdk/platform-tools:${ANDROID_HOME}/sdk/tools
+if [ -L "$ANDROID_HOME" ]; then
+  export PATH=${PATH}:${ANDROID_HOME}/platform-tools:${ANDROID_HOME}/tools
 fi
 
 # Node
@@ -154,10 +156,13 @@ alias crushpng="git diff --name-only origin/master | grep '\.png$' | xargs -I xx
 # Load rbenv
 if which rbenv > /dev/null; then eval "$(rbenv init -)"; fi
 
-
-PATH=$PATH:$HOME/.rvm/bin # Add RVM to PATH for scripting
+# PATH=$PATH:$HOME/.rvm/bin # Add RVM to PATH for scripting
 
 export GPG_TTY=$(tty)
 
 # This loads a private profile if available (used for secret e.g. work related aliases)
 [[ -s "$HOME/.profile_private" ]] && source "$HOME/.profile_private"
+
+# direnv
+eval "$(direnv hook bash)"
+
