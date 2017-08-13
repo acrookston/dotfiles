@@ -16,41 +16,6 @@ SYMLINKS = %w[
 ]
 FILES = []
 
-GIT_ALIASES = {
-  :unadd => 'reset HEAD',
-  :a  => 'add',
-  :aa => 'add --all',
-  :ap => 'add --patch',
-  :amend => 'commit --amend',
-  :fix => 'commit --amend -C HEAD',
-  :s   => 'status',
-  :w   => 'whatchanged',
-  :d   => 'diff',
-  :dc  => 'diff --cached',
-  :ds  => 'diff --stat',
-  :dom => 'diff origin/master',
-  :b   => 'branch',
-  :l   => 'log',
-  :g   => "log --all --decorate --graph --pretty=format:'%C(yellow)%h %C(red)%ad %C(blue)%an%C(green)%d %C(reset)%s' --date=short --abbrev-commit",
-  :lo  => "log --pretty=format:'%C(yellow)%h %C(red)%ad %C(blue)%an%C(green)%d %C(reset)%s' --date=short",
-  :go  => "log --pretty=format:'%C(yellow)%h %C(red)%ad %C(blue)%an%C(green)%d %C(reset)%s' --date=short -i origin/master --grep",
-  :lb  => 'log --format=oneline origin/master',
-  :lg  => 'log --grep',
-  :lf  => 'log -i --format=oneline origin/master --grep',
-  :ll  => 'log -p',
-  :c   => 'commit',
-  :co  => 'checkout',
-  :pr  => 'pull --rebase',
-  :r   => 'rebase',
-  :rom => 'rebase origin/master',
-  :rn  => 'revert --no-commit',
-  :sp  => 'stash pop',
-  :sl  => 'stash list',
-  :hist  => 'log --pretty=format:\"%h %ad | %s%d [%an]\" --graph --date=short new = !sh -c \'git log $1@{1}..$1@{0} \"$@\"\' prune = !git remote | xargs -n 1 git remote prune ',
-  :new   => %(!sh -c 'git log $1@{1}..$1@{0} "$@"'),
-  :prune => %(!git remote | xargs -n 1 git remote prune)
-}
-
 HOMEBREW_FORMULAE = %w[
   direnv
   ack
