@@ -17,41 +17,30 @@ alias netstat_proc="sudo lsof -i -P"
 # For OS X terminal title
 PROMPT_COMMAND='echo -ne "\033]0; ${PWD##*/}\007"'
 
-# GIT (TODO: Clean this up, conflicts w/ git aliases)
 alias g='git'
-alias gs='git status'
+alias gs='git s'
 alias ga='git add'
-alias gap='git add -p'
+alias gap='git ap'
 alias gadd='git add'
 alias gc='git commit'
-alias gcam="git commit -a -m"
 alias gco='git checkout'
 alias gw='git show'
-alias gg='git grep -i'
-alias gd='git diff'
-alias gdc='git diff --cached'
-alias gdo='git diff origin/master'
-alias gf='git fetch'
-alias gp='git push'
-alias gt='git stash'
+alias gd='git d'
+alias gl="git l"
+alias gf='git f'
+alias gdc='git dc'
+alias gdo='git do'
+alias gg='git g'
+alias gp='git p'
 alias gb='git symbolic-ref HEAD'
-#alias gsd="git stash show -p | git apply && git stash drop" # stash pop on dirty tree
 alias gr='git rebase'
 alias gri='git rebase -i'
-alias griom='git rebase -i origin/master'
 alias grom='git rebase origin/master'
 alias gromm='git rebase origin/master master'
-alias ggraph='git graph'
-alias gl="git graph"
-alias gi="git list"
-alias glg="git log --decorate --pretty=oneline --abbrev-commit --grep "
+alias glg="git greplog"
 alias gls="git log --grep "
 alias gwf='git show --pretty="format:" --name-only'
 alias gsearch="git log --grep [query] | sed -n '/^commit/p' | cut -d\  -f 2 | xargs git show"
-
-# export GITHUB_USER=$(security find-generic-password -s github.password | grep acct | cut -d= -f2 | tr -d \")
-# export GITHUB_PASSWORD=$(security find-generic-password -gs github.password 2>&1 >/dev/null | cut -d\  -f2 | tr -d \")
-
 
 # Ruby/Rails/rake
 alias sc="script/console"
@@ -148,7 +137,6 @@ export LESSEDIT='vim'
 # export LESSEDIT='/usr/local/bin/mate -l %lm %f'
 
 alias crushpng="git diff --name-only origin/master | grep '\.png$' | xargs -I xxx -P 10 -t pngbai xxx xxx2"
-
 
 # This loads RVM into a shell session.
 [[ -s "$HOME/.rvm/scripts/rvm" ]] && source "$HOME/.rvm/scripts/rvm"

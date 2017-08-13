@@ -1,0 +1,89 @@
+[core]
+	whitespace = trailing-space,space-before-tab
+	excludesfile = /Users/andrewcrookston/.gitignore
+[diff]
+	mnemonicprefix = true
+[push]
+	default = current
+[merge]
+	stat = true
+	conflictstyle = diff3
+	tool = fugitive
+[merge "fugitive"]
+	cmd = mvim -f -c \"Gdiff\" \"$MERGED\"
+[mergetool]
+	keepBackup = false
+[rebase]
+	autosquash = true
+	stat = true
+[init]
+	templatedir = ~/.git_template
+[gpg]
+	program = gpg1
+[credential]
+	helper = osxkeychain
+[gist]
+	private = yes
+
+[color]
+	ui = true
+[color "branch"]
+	current = bold green
+	local = green
+	remote = blue
+[color "diff"]
+	meta = yellow bold
+	frag = magenta bold
+	old = red bold
+	new = green bold
+[color "status"]
+	added = yellow
+	changed = green
+	untracked = red
+
+[alias]
+	a = add
+	c = commit
+	f = fetch
+	r = rebase
+	w = show
+	d = diff
+	p = push
+	s = status
+	t = stash
+	b = branch
+	l = log
+	g = log --all --decorate --graph --pretty=format:'%C(yellow)%h %C(red)%ad %C(blue)%an%C(green)%d %C(reset)%s' --date=short --abbrev-commit
+	aa = add --all
+	ap = add --patch
+	amend = commit --amend
+	fix = commit --amend -C HEAD
+	ws = show --stat
+	dc = diff --cached
+	ds = diff --stat
+	tp = stash pop
+	tl = stash list
+	cp = cherry-pick
+	what = whatchanged
+	dom = diff origin/master
+	graph = log --all --decorate --graph --pretty=oneline --abbrev-commit
+	lo = log --pretty=format:'%C(yellow)%h %C(red)%ad %C(blue)%an%C(green)%d %C(reset)%s' --date=short
+	go = log --pretty=format:'%C(yellow)%h %C(red)%ad %C(blue)%an%C(green)%d %C(reset)%s' --date=short -i origin/master --grep
+	lb = log --format=oneline origin/master
+	lg = log --grep
+	lf = log -i --format=oneline origin/master --grep
+	ll = log -p
+	co = checkout
+	pr = pull --rebase
+	rom = rebase origin/master
+	rn = revert --no-commit
+	hist = "log --pretty=format:\\\"%h %ad | %s%d [%an]\\\" --graph --date=short new = !sh -c 'git log $1@{1}..$1@{0} \\\"$@\\\"' prune = !git remote | xargs -n 1 git remote prune "
+	new = !sh -c 'git log $1@{1}..$1@{0} \"$@\"'
+	prune = !git remote | xargs -n 1 git remote prune
+	purge = "!git-purge $1"
+	sup = "!git-sup"
+	subup = "!git-sup"
+	loggrep = log --decorate --pretty=oneline --abbrev-commit --grep
+	logsearch = "!git log --grep [query] | sed -n '/^commit/p' | cut -d -f 2 | xargs git show"
+	unadd = reset HEAD
+	popdirty = "!git stash show -p | git apply && git stash drop"

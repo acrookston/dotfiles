@@ -104,8 +104,16 @@ task :gitignore do
   end
 end
 
-desc "Does some basic Git setup"
+desc "Install git config"
 task :gitconfig do
+
+  file = Dotfile.new('gitconfig')
+  file.delete_target
+  file.install_copy
+  unless system('git config --global core.excludesfile "$HOME/.gitignore"')
+    STDERR.puts "Could not set git excludesfile. Continuing..."
+  end
+
   exec = lambda { |command| system(*command) or STDERR.puts "Command failed: #{command.join(' ')}" }
   config = lambda { |setting, value| exec[['git', 'config', '--global', setting, value]] }
 
@@ -117,8 +125,10 @@ task :gitconfig do
     puts "Git config setup:"
     print "What's your name? "
     name = $stdin.gets.chomp
+
     print "What's your email? "
     email = $stdin.gets.chomp
+
     print "What's your Github username? "
     username = $stdin.gets.chomp
 
@@ -126,27 +136,21 @@ task :gitconfig do
     print "Is this information correct? [y/n] "
     confirm = $stdin.gets.chomp
   end
+
   config["user.name", name]
   config["user.email", email]
   config["github.user", username]
 
-  config["gist.private", "yes"]
-
-  config["color.branch.current", "bold green"]
-  config["color.branch.local", "green"]
-  config["color.branch.remote", "blue"]
-
-  config["merge.conflictstyle", "diff3"]
-  config["merge.fugitive.cmd", 'mvim -f -c "Gdiff" "$MERGED"']
-  config["merge.tool", "fugitive"]
-
-  config["rebase.autosquash", "true"]
-  config["rebase.stat", "true"]
-
-  config["init.templatedir", "~/.git_template"]
-
-  GIT_ALIASES.each do |short, command|
-    config["alias.#{short}", command]
+  puts "Use gpg signing? (y/n)"
+  confirm = ''
+  while (confirm != 'y' && confirm != 'n')
+    confirm = $stdin.gets.chomp
+    if confirm == 'y'
+      puts "Enter signing key: "
+      signingkey = $stdin.gets.chomp
+      config["commit.gpgsign", "true"]
+      config["user.signingkey", signingkey]
+    end
   end
 end
 
