@@ -44,6 +44,8 @@ alias glg="git greplog"
 alias gls="git log --grep "
 alias gwf='git show --pretty="format:" --name-only'
 alias gsearch="git log --grep [query] | sed -n '/^commit/p' | cut -d\  -f 2 | xargs git show"
+alias gbrecent="git for-each-ref --sort=committerdate refs/heads/"
+alias gbclean="git branch | grep -v "master" | xargs git branch -D"
 
 # Ruby/Rails/rake
 alias sc="script/console"
