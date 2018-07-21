@@ -9,6 +9,9 @@ alias ..="cd .."
 # freaking ios simulator is hidden away in Xcode 4.3.1
 alias ios="open '/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/Applications/iPhone Simulator.app'"
 
+# WiFi diagnostics
+alias airport="/System/Library/PrivateFrameworks/Apple80211.framework/Versions/A/Resources/airport" # Use with -s
+
 # OS X utils
 alias flushdns="dscacheutil -flushcache"
 alias updatedb="sudo /usr/libexec/locate.updatedb"
