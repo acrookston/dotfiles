@@ -93,7 +93,7 @@ CYAN="\[\033[0;36m\]"
 export PS1="$PURPLE\t \w$GREEN \$( run_fn \"ps1_rvm\" )\$( run_fn \"__rbenv_ps1\" )$YELLOW\$( run_fn \"parse_git_branch\" )$CYAN\$\[\033[00m\] "
 export LSCOLORS=dxfxcxdxbxegedabagacad
 
-export PATH=${PATH}:/usr/local/sbin:${HOME}/bin
+export PATH="/usr/local/sbin:${HOME}/bin:$PATH"
 
 # Mysql
 MYSQL_HOME=/usr/local/mysql
