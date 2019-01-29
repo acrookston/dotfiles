@@ -24,6 +24,8 @@
 	helper = osxkeychain
 [gist]
 	private = yes
+[remote "origin"]
+	prune = true
 
 [color]
 	ui = true
