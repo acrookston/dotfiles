@@ -44,6 +44,7 @@ HOMEBREW_FORMULAE = %w[
   the_silver_searcher
   wget
 ]
+# brew cask install qlcolorcode qlstephen qlmarkdown quicklook-json webpquicklook suspicious-package quicklookase qlvideo
 
 namespace :config do
 
