@@ -1,0 +1,36 @@
+#!/bin/sh
+
+if [ -z "$1" ]
+  then
+    echo "Usage: git-tag-purge [TAG NAME]"
+    exit
+fi
+
+read -p "[$1] Destroy local and remote tag (y/n)? " choice
+case "$choice" in
+  y|Y )
+    tag_ref="refs/tags/$1"
+
+    remote=$(git ls-remote -q --exit-code . $tag_ref 2> /dev/null)
+    if [ ! "$remote" ]
+      then
+        echo "[remote] $1 does not exist"
+      else
+        cmd="git push origin :$tag_ref"
+        echo "[remote] $cmd"
+        $($cmd)
+    fi
+
+    local=$(git rev-parse -q --verify $tag_ref 2> /dev/null)
+    if [ ! "$local" ]
+      then
+        echo "[local] $1 does not exist"
+      else
+        cmd="git tag -d $1"
+        echo "[local] $cmd"
+        $($cmd)
+    fi
+  ;;
+  n|N ) echo "Aborted";;
+  * ) echo "Abort! Invalid input: $choice";;
+esac

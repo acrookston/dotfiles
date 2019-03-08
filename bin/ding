@@ -1,0 +1,5 @@
+#!/bin/bash
+
+# requires gem: terminal-notifier
+
+terminal-notifier -sound default -title Terminal -message "Terminal finished some work" -activate "com.apple.terminal"
