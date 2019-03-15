@@ -126,6 +126,12 @@ if [ -L "$ANDROID_HOME" ]; then
   export PATH=${PATH}:${ANDROID_HOME}/platform-tools:${ANDROID_HOME}/tools
 fi
 
+
+OPENSSL_LIB=/usr/local/opt/openssl/lib
+if [ -L "$OPENSSL_LIB" ]; then
+  export LIBRARY_PATH=${LIBRARY_PATH}:${OPENSSL_LIB}
+fi
+
 # Node
 NPM=/usr/local/share/npm/bin
 if [ -d $NPM ]; then
