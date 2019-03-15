@@ -43,6 +43,7 @@ HOMEBREW_FORMULAE = %w[
   sphinx
   the_silver_searcher
   wget
+  hub
 ]
 # brew cask install qlcolorcode qlstephen qlmarkdown quicklook-json webpquicklook suspicious-package quicklookase qlvideo
 

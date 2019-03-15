@@ -90,3 +90,4 @@
 	logsearch = "!git log --grep [query] | sed -n '/^commit/p' | cut -d -f 2 | xargs git show"
 	unadd = reset HEAD
 	popdirty = "!git stash show -p | git apply && git stash drop"
+	pr = pull-request
