@@ -58,6 +58,12 @@ alias brake="bundle exec rake"
 alias brspec="bundle exec rspec"
 alias cap="bundle exec cap"
 
+# Starts a local webserver in current dir
+alias httpserver="python3 -m http.server"
+
+# Grab all new png files in git repo and optimize them
+alias crushpng="git diff --name-only origin/master | grep '\.png$' | xargs -I xxx -P 10 -t pngbai xxx xxx2"
+
 if [ -f $HOME/.rvm/contrib/ps1_functions ]; then
   source "$HOME/.rvm/contrib/ps1_functions"
 fi
@@ -95,6 +101,16 @@ export LSCOLORS=dxfxcxdxbxegedabagacad
 
 export PATH="/usr/local/sbin:${HOME}/bin:$PATH"
 
+# Flutter
+FLUTTER_BIN=$HOME/code/flutter/flutter/bin
+if [ -d $FLUTTER_BIN ]; then
+  export PATH=${PATH}:${FLUTTER_BIN}
+fi
+FLUTTER_PUB="$HOME/.pub-cache/bin"
+if [ -d $FLUTTER_PUB ]; then
+  export PATH=${PATH}:${FLUTTER_PUB}
+fi
+
 # Mysql
 MYSQL_HOME=/usr/local/mysql
 if [ -d $MYSQL_HOME ]; then
@@ -121,7 +137,8 @@ if [ -d $IMAGE_MAGIC_HOME ]; then
 fi
 
 # Android
-export ANDROID_HOME=${HOME}/code/adt-bundle-mac
+export ANDROID_HOME=${HOME}/Library/Android/sdk
+# export ANDROID_HOME=${HOME}/code/adt-bundle-mac
 if [ -L "$ANDROID_HOME" ]; then
   export PATH=${PATH}:${ANDROID_HOME}/platform-tools:${ANDROID_HOME}/tools
 fi
@@ -147,8 +164,6 @@ export LESSEDIT='vim'
 # export VISUAL='/usr/local/bin/mate -w'
 # export LESSEDIT='/usr/local/bin/mate -l %lm %f'
 
-alias crushpng="git diff --name-only origin/master | grep '\.png$' | xargs -I xxx -P 10 -t pngbai xxx xxx2"
-
 # This loads RVM into a shell session.
 [[ -s "$HOME/.rvm/scripts/rvm" ]] && source "$HOME/.rvm/scripts/rvm"
 
@@ -165,3 +180,8 @@ export GPG_TTY=$(tty)
 # direnv
 eval "$(direnv hook bash)"
 
+
+
+  export LDFLAGS="-L/opt/homebrew/opt/zlib/lib"
+  export CPPFLAGS="-I/opt/homebrew/opt/zlib/include"
+  export PKG_CONFIG_PATH="/opt/homebrew/opt/zlib/lib/pkgconfig"
