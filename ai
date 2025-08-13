@@ -1,0 +1,27 @@
+# Source: https://kau.sh/blog/agents-md/
+
+# Create the master directory
+mkdir -p .ai
+touch .ai/instructions.md   # master AI instructions file
+
+# Symlink all the different tool configs
+ln -s .ai/instructions.md CLAUDE.md
+ln -s .ai/instructions.md AGENTS.md       # OpenAI Codex, OpenCode
+ln -s .ai/instructions.md GEMINI.md       # GEMINI-CLI not found it respecting AGENTS.md
+ln -s .ai/instructions.md .cursorrules    # Cursor (project level only)
+# ln -s .ai/instructions.md .windsurfrules
+# ln -s .ai/instructions.md AGENT.md      # Amp
+
+# Optional: organize related AI assets
+mkdir -p .ai/commands    # *.md prompt templates for frequent tasks (call directly)
+mkdir -p .ai/rules       # *.mdc rules to follow for specific workflow (picked automatically)
+mkdir -p .ai/plans       # technical execution plans to help the AI execute on large changes
+mkdir -p .ai/docs        # project documentation that helps the AI understand features
+
+# Claude specific setup
+mkdir -p .claude
+ln -nsf ../.ai/commands .claude/commands
+
+# Cursor-specific setup
+mkdir -p .cursor
+ln -nsf ../.ai/rules .cursor/rules
