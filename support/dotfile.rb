@@ -2,8 +2,9 @@ require 'pathname'
 require 'fileutils'
 
 class Dotfile
-  def initialize(name)
+  def initialize(name, target = nil)
     @name = name
+    @target = target
   end
 
   def install_symlink
@@ -37,7 +38,7 @@ protected
   end
 
   def home_path
-    @home_path ||= File.join('~', ".#{name}")
+    @home_path ||= @target || File.join('~', ".#{name}")
   end
 
   def clear_target_path

@@ -72,6 +72,11 @@ FILES.each do |file|
   end
 end
 
+desc "Installs bin/ by symlinking it to ~/bin"
+task :bin do
+  Dotfile.new('bin', '~/bin').install_symlink
+end
+
 desc "Installs the global gitignore file"
 task :gitignore do
   Dotfile.new('gitignore').install_symlink
@@ -131,7 +136,7 @@ task :gitconfig do
 end
 
 desc "Installs all files"
-task :install => (SYMLINKS + FILES + %w[gitignore gitconfig]) do
+task :install => (SYMLINKS + FILES + %w[bin gitignore gitconfig]) do
   puts "All done!"
 end
 

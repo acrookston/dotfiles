@@ -28,6 +28,21 @@ zsh is the default shell on modern macOS, so `zshrc` is the one that matters
 there. Machine-specific or secret settings go in `~/.profile_private`,
 `~/.zshrc_private` or `~/.bashrc_private`, none of which are tracked here.
 
+Git and the default branch
+--------------------------
+Aliases that used to hardcode `origin/master` (`rom`, `riom`, `dom`, `lb`,
+`lf`, `go`, and the `grom`/`gbclean`/`crushpng` shell aliases) now resolve the
+branch at runtime via `bin/git-default-branch`, so they work in `master` and
+`main` repos alike. It reads `origin/HEAD` first, then falls back to whichever
+of main/master/trunk/develop actually exists -- all locally, no network call.
+
+If a repo reports the wrong branch, its `origin/HEAD` is stale or missing:
+
+    git remote set-head origin --auto
+
+`bin/` is symlinked to `~/bin` by `rake config:bin`, which the git aliases
+need on PATH.
+
 Installation
 ------------
  * Begin by cloning this repository somewhere on your machine, for example ~/dotfiles.

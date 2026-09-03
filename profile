@@ -81,14 +81,25 @@ alias gp='git p'
 alias gb='git symbolic-ref HEAD'
 alias gr='git rebase'
 alias gri='git rebase -i'
-alias grom='git rebase origin/master'
-alias gromm='git rebase origin/master master'
+alias grom='git rebase origin/$(git-default-branch)'
+alias gromm='git rebase origin/$(git-default-branch) $(git-default-branch)'
 alias glg="git greplog"
 alias gls="git log --grep "
 alias gwf='git show --pretty="format:" --name-only'
 alias gsearch="git log --grep [query] | sed -n '/^commit/p' | cut -d\  -f 2 | xargs git show"
 alias gbrecent="git for-each-ref --sort=committerdate refs/heads/"
-alias gbclean="git branch | grep -v "master" | xargs git branch -D"
+# Delete every local branch except the default one. grep -vx so a branch
+# named e.g. "main-experiment" isn't spared, and the sed strips the "* "
+# marker so we never try to delete the branch we're on.
+gbclean() {
+  default=$(git-default-branch) || return 1
+  branches=$(git branch | sed 's/^[* ] //' | grep -vx "$default" || true)
+  if [ -z "$branches" ]; then
+    echo "No branches to clean up."
+    return 0
+  fi
+  echo "$branches" | xargs git branch -D
+}
 
 # Ruby/Rails/rake
 alias sc="script/console"
@@ -105,7 +116,7 @@ alias cap="bundle exec cap"
 alias httpserver="python3 -m http.server"
 
 # Grab all new png files in git repo and optimize them
-alias crushpng="git diff --name-only origin/master | grep '\.png$' | xargs -I xxx -P 10 -t pngbai xxx xxx2"
+alias crushpng="git diff --name-only origin/\$(git-default-branch) | grep '\.png$' | xargs -I xxx -P 10 -t pngbai xxx xxx2"
 
 # ---------------------------------------------------------------------------
 # Helpers shared by both prompts

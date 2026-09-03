@@ -1,0 +1,43 @@
+#!/bin/sh
+#
+# Print a repository's default branch name (main, master, or whatever else).
+#
+# Lets aliases work across repos regardless of which convention they use,
+# instead of hardcoding one. Callable as `git default-branch` via the alias
+# in gitconfig.
+#
+# usage: git default-branch [remote]   # remote defaults to origin
+
+set -e
+remote="${1:-origin}"
+
+# The authoritative answer: origin/HEAD, which git sets at clone time.
+head=$(git symbolic-ref --short "refs/remotes/$remote/HEAD" 2>/dev/null || true)
+if [ -n "$head" ]; then
+  echo "${head#"$remote"/}"
+  exit 0
+fi
+
+# origin/HEAD is missing. That happens with shallow clones, remotes added by
+# hand, and repos that were renamed master -> main after cloning. Guess from
+# the remote branches we already have, rather than hitting the network --
+# these aliases run often enough that a network round trip would be felt.
+#
+# `git remote set-head $remote --auto` fixes the underlying cause for good.
+for branch in main master trunk develop; do
+  if git show-ref --quiet --verify "refs/remotes/$remote/$branch"; then
+    echo "$branch"
+    exit 0
+  fi
+done
+
+# No matching remote branch, so this may be a local-only repo.
+for branch in main master trunk develop; do
+  if git show-ref --quiet --verify "refs/heads/$branch"; then
+    echo "$branch"
+    exit 0
+  fi
+done
+
+# Nothing to go on. Use whatever a new repo here would be called.
+git config --get init.defaultBranch 2>/dev/null || echo main
