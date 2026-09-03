@@ -1,11 +1,21 @@
-# Setting up a new Mac OS X
+# Setting up a new Mac
 
-Run on a Mac OS X 10.8 Mountain Lion.
 Not well tested, may be incomplete. Use at your own risk.
 
 - Install Xcode via App Store
-- Install Xcode-cli-tools from https://developer.apple.com/downloads/index.action
-- Run install.sh (installs homebrew and listed formulae)
-- Install homebrew from http://mxcl.github.io/homebrew/ # `ruby -e "$(curl -fsSL https://raw.github.com/mxcl/homebrew/go)"`
+- Install the CLI tools: `xcode-select --install`
+- Install Homebrew from https://brew.sh # `/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"`
+  - On Apple Silicon this lands in `/opt/homebrew`, on Intel in `/usr/local`. `profile` detects both.
 - Run `brew doctor` and resolve any issues
+- Run `rake system:install_formulae` for the listed formulae
+- Run `rake config:install` to symlink the dotfiles
+
+## Shells
+
+macOS defaults to zsh. `rake config:install` symlinks `~/.zshrc`, `~/.bashrc`
+and `~/.bash_profile`, all of which source the shared `~/.profile`.
+
+Note that zsh does *not* read `~/.profile` on its own — `~/.zshrc` is what
+pulls it in. If you add a login-shell-only tweak, put it in `~/.zprofile`
+(untracked, machine-specific).
 

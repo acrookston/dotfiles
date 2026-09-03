@@ -14,6 +14,20 @@ Preference bias
 ---------------
 I'm biased towards Ruby, Git and VIM so most configurations should be inline with this ecosystem. I use both Linux and Mac systems so no preference will be taken there.
 
+Shell setup
+-----------
+`profile` holds everything both shells share: aliases, PATH, exports, and tool
+hooks (rbenv, rvm, direnv, Homebrew). It's kept POSIX-compatible, so it must
+stay free of bashisms and zshisms.
+
+`zshrc` and `bashrc` each source `~/.profile` first, then add the parts that
+can't be shared: prompt, completion, history and key bindings. `bash_profile`
+just sources `~/.bashrc`, since login bash skips it otherwise.
+
+zsh is the default shell on modern macOS, so `zshrc` is the one that matters
+there. Machine-specific or secret settings go in `~/.profile_private`,
+`~/.zshrc_private` or `~/.bashrc_private`, none of which are tracked here.
+
 Installation
 ------------
  * Begin by cloning this repository somewhere on your machine, for example ~/dotfiles.

@@ -1,3 +1,52 @@
+# Shared shell configuration, sourced by both ~/.bashrc and ~/.zshrc.
+# Keep everything in here POSIX-compatible: no bashisms, no zshisms.
+# Shell-specific things (prompt, completion, history) live in bashrc/zshrc.
+
+# Which shell are we in? Used for tool hooks that need to know.
+if [ -n "$ZSH_VERSION" ]; then
+  DOTFILES_SHELL=zsh
+elif [ -n "$BASH_VERSION" ]; then
+  DOTFILES_SHELL=bash
+else
+  DOTFILES_SHELL=sh
+fi
+export DOTFILES_SHELL
+
+# Add to PATH only if the directory exists and isn't already there. This keeps
+# PATH sane when the profile gets sourced more than once (login + interactive).
+path_prepend() {
+  [ -d "$1" ] || return 0
+  case ":${PATH}:" in
+    *":$1:"*) ;;
+    *) PATH="$1:$PATH" ;;
+  esac
+}
+
+path_append() {
+  [ -d "$1" ] || return 0
+  case ":${PATH}:" in
+    *":$1:"*) ;;
+    *) PATH="${PATH}:$1" ;;
+  esac
+}
+
+# ---------------------------------------------------------------------------
+# Homebrew
+# ---------------------------------------------------------------------------
+
+# Apple Silicon installs to /opt/homebrew, Intel to /usr/local.
+for brew_prefix in /opt/homebrew /usr/local /home/linuxbrew/.linuxbrew; do
+  if [ -x "$brew_prefix/bin/brew" ]; then
+    eval "$("$brew_prefix/bin/brew" shellenv)"
+    HOMEBREW_PREFIX="$brew_prefix"
+    break
+  fi
+done
+unset brew_prefix
+
+# ---------------------------------------------------------------------------
+# Aliases
+# ---------------------------------------------------------------------------
 
 # system/file navigation
 alias ls="ls -G"
@@ -6,19 +55,13 @@ alias ll='ls -Ghlk'
 alias la='ls -GAhlka'
 alias ..="cd .."
 
-# freaking ios simulator is hidden away in Xcode 4.3.1
-alias ios="open '/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/Applications/iPhone Simulator.app'"
-
 # WiFi diagnostics
 alias airport="/System/Library/PrivateFrameworks/Apple80211.framework/Versions/A/Resources/airport" # Use with -s
 
 # OS X utils
-alias flushdns="dscacheutil -flushcache"
+alias flushdns="sudo dscacheutil -flushcache; sudo killall -HUP mDNSResponder"
 alias updatedb="sudo /usr/libexec/locate.updatedb"
 alias netstat_proc="sudo lsof -i -P"
-
-# For OS X terminal title
-PROMPT_COMMAND='echo -ne "\033]0; ${PWD##*/}\007"'
 
 alias g='git'
 alias gs='git s'
@@ -64,124 +107,80 @@ alias httpserver="python3 -m http.server"
 # Grab all new png files in git repo and optimize them
 alias crushpng="git diff --name-only origin/master | grep '\.png$' | xargs -I xxx -P 10 -t pngbai xxx xxx2"
 
-if [ -f $HOME/.rvm/contrib/ps1_functions ]; then
-  source "$HOME/.rvm/contrib/ps1_functions"
-fi
+# ---------------------------------------------------------------------------
+# Helpers shared by both prompts
+# ---------------------------------------------------------------------------
 
-if [ -f "/usr/local/etc/bash_completion.d" ]; then
-  source "/usr/local/etc/bash_completion.d"
-fi
-
-function parse_git_branch {
+parse_git_branch() {
   ref=$(git symbolic-ref HEAD 2> /dev/null) || return
-    echo "("${ref#refs/heads/}")"
+  echo "("${ref#refs/heads/}")"
 }
 
-__rbenv_ps1 () {
-    if which rbenv > /dev/null; then
-      rbenv_ruby_version=`rbenv version | sed -e 's/ .*//'`
-      printf $rbenv_ruby_version
-    fi
+rbenv_version() {
+  command -v rbenv > /dev/null || return
+  rbenv version 2> /dev/null | sed -e 's/ .*//'
 }
 
-run_fn() {
-  [[ "$(declare -Ff "$1")" ]] || return
-  echo "$($1)"
-}
+# ---------------------------------------------------------------------------
+# PATH
+# ---------------------------------------------------------------------------
 
-RED="\[\033[0;31m\]"
-GREEN="\[\033[0;32m\]"
-YELLOW="\[\033[0;33m\]"
-BLUE="\[\033[0;34m\]"
-PURPLE="\[\033[0;35m\]"
-CYAN="\[\033[0;36m\]"
+path_prepend "/usr/local/sbin"
+path_prepend "${HOME}/bin"
 
-export PS1="$PURPLE\t \w$GREEN \$( run_fn \"ps1_rvm\" )\$( run_fn \"__rbenv_ps1\" )$YELLOW\$( run_fn \"parse_git_branch\" )$CYAN\$\[\033[00m\] "
-export LSCOLORS=dxfxcxdxbxegedabagacad
-
-export PATH="/usr/local/sbin:${HOME}/bin:$PATH"
-
-# Flutter
-FLUTTER_BIN=$HOME/code/flutter/flutter/bin
-if [ -d $FLUTTER_BIN ]; then
-  export PATH=${PATH}:${FLUTTER_BIN}
-fi
-FLUTTER_PUB="$HOME/.pub-cache/bin"
-if [ -d $FLUTTER_PUB ]; then
-  export PATH=${PATH}:${FLUTTER_PUB}
-fi
-
-# Mysql
-MYSQL_HOME=/usr/local/mysql
-if [ -d $MYSQL_HOME ]; then
-  export PATH=${PATH}:${MYSQL_HOME}/bin
-fi
-
-# Mongodb
-MONGO_HOME=/usr/local/mongodb
-if [ -d $MONGO_HOME ]; then
-  export PATH=${PATH}:${MONGO_HOME}/bin
-fi
-
-# Flash/Flex
-export FLEXPATH=${HOME}/code/flex_4_13
-export FLEX_HOME=${FLEXPATH}
-if [ -d $FLEX_HOME ]; then
-  export PATH=${PATH}:${FLEX_HOME}/bin
-fi
-
-# ImageMagick
-IMAGE_MAGICK_HOME=/usr/local/Cellar/imagemagick/6.7.1-1
-if [ -d $IMAGE_MAGIC_HOME ]; then
-  export PATH=${PATH}:${IMAGE_MAGICK_HOME}/bin
-fi
+path_append "${HOME}/code/flutter/flutter/bin"
+path_append "${HOME}/.pub-cache/bin"
+path_append "/usr/local/mysql/bin"
+path_append "/usr/local/mongodb/bin"
+path_append "${HOME}/.cargo/bin"
 
 # Android
-export ANDROID_HOME=${HOME}/Library/Android/sdk
-# export ANDROID_HOME=${HOME}/code/adt-bundle-mac
-if [ -L "$ANDROID_HOME" ]; then
-  export PATH=${PATH}:${ANDROID_HOME}/platform-tools:${ANDROID_HOME}/tools
+export ANDROID_HOME="${HOME}/Library/Android/sdk"
+path_append "${ANDROID_HOME}/platform-tools"
+path_append "${ANDROID_HOME}/tools"
+
+export PATH
+
+# ---------------------------------------------------------------------------
+# Build flags
+# ---------------------------------------------------------------------------
+
+if [ -n "$HOMEBREW_PREFIX" ]; then
+  if [ -d "$HOMEBREW_PREFIX/opt/openssl/lib" ]; then
+    export LIBRARY_PATH="${LIBRARY_PATH}:$HOMEBREW_PREFIX/opt/openssl/lib"
+  fi
+  if [ -d "$HOMEBREW_PREFIX/opt/zlib" ]; then
+    export LDFLAGS="-L$HOMEBREW_PREFIX/opt/zlib/lib"
+    export CPPFLAGS="-I$HOMEBREW_PREFIX/opt/zlib/include"
+    export PKG_CONFIG_PATH="$HOMEBREW_PREFIX/opt/zlib/lib/pkgconfig"
+  fi
 fi
 
-
-OPENSSL_LIB=/usr/local/opt/openssl/lib
-if [ -L "$OPENSSL_LIB" ]; then
-  export LIBRARY_PATH=${LIBRARY_PATH}:${OPENSSL_LIB}
-fi
-
-# Node
-NPM=/usr/local/share/npm/bin
-if [ -d $NPM ]; then
-  export PATH=${PATH}:${NPM}
-fi
+# ---------------------------------------------------------------------------
+# Environment
+# ---------------------------------------------------------------------------
 
 export EDITOR='vim'
 export VISUAL='vim'
 export LESSEDIT='vim'
-
-# For TextMate
-# export EDITOR='/usr/local/bin/mate -w'
-# export VISUAL='/usr/local/bin/mate -w'
-# export LESSEDIT='/usr/local/bin/mate -l %lm %f'
-
-# This loads RVM into a shell session.
-[[ -s "$HOME/.rvm/scripts/rvm" ]] && source "$HOME/.rvm/scripts/rvm"
-
-# Load rbenv
-if which rbenv > /dev/null; then eval "$(rbenv init -)"; fi
-
-# PATH=$PATH:$HOME/.rvm/bin # Add RVM to PATH for scripting
-
+export LSCOLORS=dxfxcxdxbxegedabagacad
+export CLICOLOR=1
 export GPG_TTY=$(tty)
 
+# ---------------------------------------------------------------------------
+# Version managers and shell hooks
+# ---------------------------------------------------------------------------
+
+# This loads RVM into a shell session.
+[ -s "$HOME/.rvm/scripts/rvm" ] && . "$HOME/.rvm/scripts/rvm"
+
+if command -v rbenv > /dev/null; then
+  eval "$(rbenv init - "$DOTFILES_SHELL")"
+fi
+
+if command -v direnv > /dev/null; then
+  eval "$(direnv hook "$DOTFILES_SHELL")"
+fi
+
 # This loads a private profile if available (used for secret e.g. work related aliases)
-[[ -s "$HOME/.profile_private" ]] && source "$HOME/.profile_private"
-
-# direnv
-eval "$(direnv hook bash)"
-
-
-
-  export LDFLAGS="-L/opt/homebrew/opt/zlib/lib"
-  export CPPFLAGS="-I/opt/homebrew/opt/zlib/include"
-  export PKG_CONFIG_PATH="/opt/homebrew/opt/zlib/lib/pkgconfig"
+[ -s "$HOME/.profile_private" ] && . "$HOME/.profile_private"

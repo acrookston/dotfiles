@@ -13,14 +13,19 @@ SYMLINKS = %w[
   vimrc.after
   tm_properties
   profile
+  zshrc
+  bashrc
+  bash_profile
 ]
 FILES = []
 
 HOMEBREW_FORMULAE = %w[
-  direnv
   ack
   advancecomp
-  elasticsearch
+  bash-completion@2
+  direnv
+  fd
+  gh
   gist
   git
   gnutls
@@ -30,22 +35,26 @@ HOMEBREW_FORMULAE = %w[
   libevent
   links
   macvim
-  mongodb
   mysql
-  mysql-connector-c
+  mysql-client
   nginx
   ngrep
   nmap
   node
   optipng
   pngcrush
+  rbenv
   redis
-  sphinx
+  ripgrep
   the_silver_searcher
   wget
-  hub
 ]
-# brew cask install qlcolorcode qlstephen qlmarkdown quicklook-json webpquicklook suspicious-package quicklookase qlvideo
+# Removed: elasticsearch and mongodb both left homebrew/core over license
+# changes -- install from elastic/tap and mongodb/brew if you need them again.
+# Removed: sphinx, which is now an alias for sphinx-doc (the Python docs tool),
+# not the full-text search engine. That one is no longer packaged at all.
+# Renamed: mysql-connector-c -> mysql-client, hub -> gh.
+# brew install --cask qlcolorcode qlstephen qlmarkdown quicklook-json webpquicklook suspicious-package quicklookase qlvideo
 
 namespace :config do
 
