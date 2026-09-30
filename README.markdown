@@ -50,6 +50,7 @@ Installation
  * `rake system:install`
  * When you're done. To setup your dot/config files run:
  * `rake config:install`
+ * Claude Code skills, agents, commands and hooks live in `claude/`. `rake config:claude` symlinks each one into the matching `~/.claude` folder and leaves everything else there alone. It also moves `~/.claude/CLAUDE.md` into the repo on first run.
  * You're done!
 
 Any files found conflicting will be backed up. Check the output of the installer.
