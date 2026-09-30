@@ -19,6 +19,19 @@ SYMLINKS = %w[
 ]
 FILES = []
 
+# Claude Code config in claude/. Each entry inside these folders is symlinked
+# into the matching ~/.claude folder, so anything not in the repo is left alone.
+# settings.json and runtime state stay out of the repo on purpose.
+CLAUDE_DIRS = %w[
+  skills
+  agents
+  commands
+  hooks
+]
+CLAUDE_FILES = %w[
+  CLAUDE.md
+]
+
 HOMEBREW_FORMULAE = %w[
   ack
   advancecomp
@@ -75,6 +88,61 @@ end
 desc "Installs bin/ by symlinking it to ~/bin"
 task :bin do
   Dotfile.new('bin', '~/bin').install_symlink
+end
+
+desc "Symlinks each skill, agent, command and hook in claude/ into ~/.claude"
+task :claude do
+  repo_dir = File.expand_path('../claude', __FILE__)
+  home_dir = File.expand_path('~/.claude')
+  backup_dir = File.join(home_dir, 'dotfiles-backup', Time.now.strftime('%Y%m%d-%H%M%S'))
+
+  CLAUDE_DIRS.each do |dir|
+    source_dir = File.join(repo_dir, dir)
+    next unless File.directory?(source_dir)
+
+    target_dir = File.join(home_dir, dir)
+    # An earlier version of this task linked the whole folder. Undo that.
+    File.delete(target_dir) if File.symlink?(target_dir)
+    FileUtils.mkdir_p(target_dir)
+
+    Dir.children(source_dir).sort.each do |entry|
+      next if entry.start_with?('.')
+      source = File.join(source_dir, entry)
+      target = File.join(target_dir, entry)
+      already_linked = begin
+        File.symlink?(target) && File.realpath(target) == File.realpath(source)
+      rescue Errno::ENOENT
+        false
+      end
+      next if already_linked
+
+      # Back up outside the scanned folders. A copy left next to the original
+      # would load as a second skill or agent with the same name.
+      if File.exist?(target) || File.symlink?(target)
+        backup = File.join(backup_dir, dir, entry)
+        puts "~/.claude/#{dir}/#{entry} already exists. Moving it to #{backup}"
+        FileUtils.mkdir_p(File.dirname(backup))
+        FileUtils.mv(target, backup)
+      end
+
+      puts "Linking ~/.claude/#{dir}/#{entry}"
+      File.symlink(Pathname.new(source).relative_path_from(Pathname.new(target_dir)), target)
+    end
+  end
+
+  CLAUDE_FILES.each do |file|
+    source = File.join(repo_dir, file)
+    target = File.join(home_dir, file)
+
+    # First run: adopt the existing file into the repo.
+    if File.file?(target) && !File.symlink?(target) && !File.exist?(source)
+      puts "Moving #{target} into #{repo_dir}"
+      FileUtils.mkdir_p(repo_dir)
+      FileUtils.mv(target, source)
+    end
+
+    Dotfile.new("claude/#{file}", "~/.claude/#{file}").install_symlink if File.exist?(source)
+  end
 end
 
 desc "Installs the global gitignore file"
@@ -136,7 +204,7 @@ task :gitconfig do
 end
 
 desc "Installs all files"
-task :install => (SYMLINKS + FILES + %w[bin gitignore gitconfig]) do
+task :install => (SYMLINKS + FILES + %w[bin gitignore gitconfig claude]) do
   puts "All done!"
 end
 
@@ -153,6 +221,17 @@ desc "Clears all symlinks"
 task :clear_symlinks do
   SYMLINKS.each do |file|
     Dotfile.new(file).delete_target
+  end
+  repo_dir = File.expand_path('../claude', __FILE__)
+  CLAUDE_DIRS.each do |dir|
+    Dir.glob(File.expand_path("~/.claude/#{dir}/*")).each do |target|
+      next unless File.symlink?(target)
+      points_to = File.expand_path(File.readlink(target), File.dirname(target))
+      File.delete(target) if points_to.start_with?(repo_dir + '/')
+    end
+  end
+  CLAUDE_FILES.each do |file|
+    Dotfile.new("claude/#{file}", "~/.claude/#{file}").delete_target(:only_symlink => true)
   end
 end
 end
