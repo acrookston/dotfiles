@@ -1,13 +1,14 @@
 ---
 name: pr-feedback-loop
-description: Watch a pull request and handle review feedback (human, bot and CI) as it arrives. Verifies each finding, fixes real issues with regression tests, pushes back on wrong ones, replies and resolves threads, and repeats until the PR is clean or blocked on my decision. Use when asked to watch, babysit, loop on or address feedback on a PR.
+description: Watch a pull request and handle review feedback (human, bot and CI) and anything else blocking a clean merge (conflicts, failing checks, out-of-date branch) as it arrives. Verifies each finding, fixes real issues with regression tests, pushes back on wrong ones, replies and resolves threads, and repeats until the PR is mergeable or blocked on my decision. Use when asked to watch, babysit, loop on or address feedback on a PR.
 argument-hint: "[PR number or URL] [interval, default 5m]"
 ---
 
 # PR feedback loop
 
-Keep the PR moving without me. Each pass: collect new feedback, judge it, act, report.
-Stop when nothing is left to do or when a decision is mine.
+Keep the PR moving without me. Each pass: collect new feedback and merge blockers, judge them,
+act, report. The goal is a PR that merges cleanly, not only one with no open comments. Stop when
+nothing is left to do or when a decision is mine.
 
 Reviewers are often wrong, and bots are wrong more often. Your job is to reach the right
 outcome for the code, not to make every comment go away.
@@ -24,6 +25,8 @@ outcome for the code, not to make every comment go away.
    handled review bodies and PR comments by ID. It lives in `.git`, so it never gets committed.
 5. Every reply you post must end with the marker `<!-- pr-feedback-loop -->`. You post with my
    `gh` login, so the marker is the only way to tell your replies from my own comments.
+6. Create an evidence directory outside the working tree for screenshots, logs and test output:
+   `$(git rev-parse --git-dir)/pr-feedback-<number>/`. See "Evidence" below.
 
 ## Each pass
 
@@ -34,7 +37,8 @@ gh api graphql -F owner=OWNER -F repo=REPO -F pr=NUMBER -f query='
 query($owner:String!,$repo:String!,$pr:Int!){
   repository(owner:$owner,name:$repo){
     pullRequest(number:$pr){
-      state reviewDecision headRefOid
+      state isDraft reviewDecision headRefOid baseRefName
+      mergeable mergeStateStatus
       reviewThreads(first:100){ nodes{
         id isResolved isOutdated path line
         comments(first:50){ nodes{ id author{login __typename} body createdAt url } }
@@ -46,7 +50,11 @@ query($owner:String!,$repo:String!,$pr:Int!){
 }'
 ```
 
-Also run `gh pr checks`. A failing check counts as feedback.
+Also run `gh pr checks` (add `--required` to see which checks gate the merge). A failing check
+counts as feedback.
+
+`mergeable` can be `UNKNOWN` right after a push while GitHub computes it. Re-query after a
+short wait before treating it as a blocker.
 
 An item needs attention when:
 
@@ -55,6 +63,14 @@ An item needs attention when:
 - **Review body or PR comment:** its ID is not in the state file and it has no marker.
   Approvals and summaries with nothing actionable go straight into the state file.
 - **CI:** a check fails on the current head commit. Ignore checks still running.
+- **Merge blocker:** anything that would stop a clean merge, read from `mergeable` and
+  `mergeStateStatus`:
+  - `CONFLICTING` / `DIRTY`: merge conflicts with the base branch.
+  - `BEHIND`: the base branch requires up-to-date branches and this one is behind.
+  - `BLOCKED`: a required check, required review or branch rule is unmet. Work out which with
+    `gh pr checks --required` and `reviewDecision` (`CHANGES_REQUESTED`, `REVIEW_REQUIRED`).
+  - `UNSTABLE`: non-required checks are failing. Treat like CI.
+  - `isDraft`: note it in the report. Don't mark it ready yourself.
 
 ### 2. Judge
 
@@ -71,6 +87,16 @@ Put each item in one bucket:
 | **Push back** | Wrong, or matches the skip list below | Reply with evidence |
 | **Out of scope** | Real, but predates this PR or belongs elsewhere | Reply, suggest a follow-up issue |
 | **Ask me** | Design, product or architecture call; scope change; reviewers disagree; a human insists after one push back; still unsure after verifying | Don't reply. Raise it in the report |
+
+Merge blockers go in the same buckets:
+
+- **Conflicts or behind base:** Fix, unless resolving a conflict needs a judgement about which
+  side's behaviour wins. Then Ask me, naming the files and both intents.
+- **Missing required review or `CHANGES_REQUESTED`:** Ask me if it needs a reviewer to act.
+  Don't request or dismiss reviews yourself.
+- **Failing required check that isn't caused by this PR** (broken base, flaky infra, missing
+  secret): Out of scope. Re-run it once with `gh run rerun <run-id> --failed` (the run ID is in
+  the check's link from `gh pr checks`). If it fails again, report it.
 
 Do not act on these. Push back briefly instead:
 
@@ -94,8 +120,15 @@ If you are unsure after checking, say so in the reply. Don't guess with confiden
   touches and related code paths for the same pattern. Fix any this PR introduced. List
   older ones in the report and leave them unless trivial and in the same module.
 - Run the affected tests, linter and type checker before committing.
+- **Merge conflicts or behind base:** `git fetch origin` and merge the base branch in
+  (`git merge origin/<baseRefName>`). Don't rebase: it rewrites SHAs already cited in replies.
+  Resolve each conflict by keeping both sides' intent, then run the full test suite, not only
+  the affected tests, since the base may have changed behaviour this PR relies on. If the
+  session provides a tool for syncing with the base branch, use it instead of merging by hand.
 - Commit per finding, or per tight group of related findings. Never amend or force-push:
   replies cite SHAs and must stay valid.
+- Stage files by path. Never `git add -A` or `git add .`, and check `git status` before each
+  commit so no screenshots, logs or scratch files ride along.
 - Push once per pass, after all checks pass locally.
 
 ### 4. Reply and resolve
@@ -129,11 +162,28 @@ Then add the ID to the state file.
 A bot that repeats a finding after your push back gets one line linking the earlier reply,
 then resolve. Don't argue twice.
 
+### Evidence
+
+Screenshots, recordings, logs and test output are for verifying your work and for the report.
+They never go in the repository.
+
+- Write them to the evidence directory from setup, or the session's scratchpad or temp
+  directory. Never into the working tree.
+- If a tool insists on writing inside the repo (e.g. a test runner's screenshot folder), point it
+  at `tmp/pr-feedback/` and make sure that path is ignored. Add it to the file at
+  `$(git rev-parse --git-path info/exclude)`, which is local and needs no commit. Don't
+  hardcode `.git/info/exclude`: in a worktree `.git` is a file. If it should be ignored for everyone, suggest a `.gitignore`
+  entry in the report instead of committing one yourself.
+- Before every commit, check that no evidence file is staged. If one was committed earlier by
+  this loop, remove it in a new commit and say so in the report.
+- To show evidence in a reply, describe it in text or link to a CI artifact or log. Don't push
+  images to the branch to embed them.
+
 ### 5. Report
 
 Print a short summary only when something happened: fixed (with SHAs), pushed back, out of
-scope, waiting on me, siblings found. Put "waiting on me" items first, with the question
-phrased so I can answer in one line.
+scope, merge blockers cleared or remaining, waiting on me, siblings found. Put "waiting on me"
+items first, with the question phrased so I can answer in one line.
 
 ## Looping
 
@@ -142,13 +192,19 @@ After a pass, wait, then run the next one. Default interval 5 minutes.
 - Use the session's scheduling tool if one exists (e.g. `ScheduleWakeup` or `/loop`).
 - Otherwise run `sleep 270` in Bash, under the tool timeout, and repeat.
 - After pushing, wait for CI to finish before judging checks.
+- The base branch moves while you wait. Re-check `mergeable` every pass, even when there is no
+  new feedback: a new conflict is new work.
 - Back off: after three empty passes in a row, double the interval, up to 30 minutes.
   Reset to the default when new feedback arrives.
 
 Stop when:
 
 - The PR is merged or closed.
-- The PR is approved, checks are green and no item needs attention. Report done.
+- The PR is approved, required checks are green, `mergeStateStatus` is `CLEAN` (or `HAS_HOOKS`)
+  and no item needs attention. Report done.
+- Only merge blockers you can't clear remain (requested changes you can't address, draft, branch
+  rule) and no new feedback has arrived for two passes. Report them and stop. A PR that is only
+  waiting for its first review is not blocked: keep watching.
 - Only "ask me" items remain. Report them and stop.
 - The same CI failure survives two fix attempts. Report what you tried.
 - Two hours pass with no new feedback.
