@@ -164,8 +164,8 @@ then resolve. Don't argue twice.
 
 ### Evidence
 
-Screenshots, recordings, logs and test output are for verifying your work and for the report.
-They never go in the repository.
+Screenshots, recordings, logs and test output prove the work. Attach them to the PR, where
+reviewers can check them. They never go in the repository.
 
 - Write them to the evidence directory from setup, or the session's scratchpad or temp
   directory. Never into the working tree.
@@ -176,8 +176,17 @@ They never go in the repository.
   entry in the report instead of committing one yourself.
 - Before every commit, check that no evidence file is staged. If one was committed earlier by
   this loop, remove it in a new commit and say so in the report.
-- To show evidence in a reply, describe it in text or link to a CI artifact or log. Don't push
-  images to the branch to embed them.
+- **Attach a checkable amount, not everything.** Only attach evidence for a claim a reviewer
+  would want to check: a UI fix (before and after), a reproduced bug, a failing then passing
+  test. Usually one to three images per reply, cropped to what matters. Skip evidence for
+  changes the diff or CI already proves.
+- **Text** (test output, logs): paste the relevant lines into the reply or PR comment, trimmed
+  and inside a collapsed `<details>` block. Link to CI logs instead of pasting long ones.
+- **Images:** `gh` can't upload attachments. If the session has a browser tool that can upload
+  files, open the PR in it, add the image to the reply or comment box so GitHub hosts it, and
+  post. Otherwise list the file paths in the report so I can attach them.
+- Never work around this by pushing images to the branch, an orphan branch, a release or a
+  gist.
 
 ### 5. Report
 
