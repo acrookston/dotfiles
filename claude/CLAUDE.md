@@ -65,6 +65,9 @@ coding. If they do, state them and proceed. A fix you can describe in one senten
 - When diagnosing, list the competing hypotheses and the evidence for each before committing to one.
 - Keep status summaries short (5–8 bullets) unless asked for more.
 - When asked to update docs, edit them in place. Don't draft change notices unless asked.
+- In anything I may copy and run (payloads, SQL, commands), write IDs and values in full; shorten
+  them only in prose. If you don't know a value, look it up or use an obvious placeholder like
+  `[id of the grant call]`, never an invented value that looks real.
 
 ## Known pitfalls
 
