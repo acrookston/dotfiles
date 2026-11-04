@@ -42,6 +42,9 @@ coding. If they do, state them and proceed. A fix you can describe in one senten
 
 ## PR review feedback
 
+- After opening a non-draft PR, or marking a draft ready, start the `pr-feedback-loop` skill in a
+  separate session that shares this checkout, unless I say not to. Its own worktree can't check
+  out a branch this one already holds.
 - Verify every review finding (human or bot) yourself before acting on it. Push back with evidence
   on findings that are wrong.
 - For a real bug, add a regression test that fails without the fix.
