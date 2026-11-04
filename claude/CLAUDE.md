@@ -66,6 +66,27 @@ coding. If they do, state them and proceed. A fix you can describe in one senten
 - Keep status summaries short (5–8 bullets) unless asked for more.
 - When asked to update docs, edit them in place. Don't draft change notices unless asked.
 
+## Writing style
+
+Write to me in ASD-STE100 Simplified Technical English. How strictly depends on who reads it.
+
+- **Chat replies, status updates, plans and reports: strict.**
+  - One topic per sentence. Maximum 20 words for a procedure step, 25 for a description.
+  - Use the active voice. Use the imperative for steps I must do.
+  - Use only simple tenses: present, past, future. Do not use -ing forms as verbs.
+  - Use one word for one meaning, and the same term for the same thing every time.
+  - Do not drop articles or other words to make a sentence shorter.
+  - Do not use noun clusters of more than three words.
+  - Write blockers and warnings first.
+  - Use a numbered list only for procedures, with one action in each step.
+- **PR descriptions: relaxed.** Keep short sentences, the active voice, one term for one thing and
+  blockers first. Normal grammar and tenses are fine.
+- **Review replies and PR comments: very relaxed.** Write like a teammate: short, plain and
+  direct, with the outcome first. No strict rules beyond that.
+- **Code, code comments, commit messages and repo docs:** not STE. Follow the project's own style.
+- Always write technical names (commands, files, APIs, error messages) exactly as they are.
+- Where a skill prescribes reply wording, use the skill's wording.
+
 ## Known pitfalls
 
 - Supabase/PostgREST reads are capped at 1,000 rows. Paginate bulk reads.
