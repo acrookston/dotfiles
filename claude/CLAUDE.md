@@ -39,6 +39,8 @@ coding. If they do, state them and proceed. A fix you can describe in one senten
   work. Before pushing to an existing PR, confirm it is still open (`gh pr view <n> --json state`);
   never push to a merged PR.
 - When a prerequisite branch exists, branch from it instead of waiting for it to merge.
+- Stage files by path. Never `git commit -a` or `git add -A`/`git add .`: worktree setup may copy my
+  local configs (e.g. `.codex/config.toml`, env files) into the checkout.
 
 ## PR review feedback
 
@@ -68,6 +70,9 @@ coding. If they do, state them and proceed. A fix you can describe in one senten
 - When diagnosing, list the competing hypotheses and the evidence for each before committing to one.
 - Keep status summaries short (5–8 bullets) unless asked for more.
 - When asked to update docs, edit them in place. Don't draft change notices unless asked.
+- In anything I may copy and run (payloads, SQL, commands), write IDs and values in full; shorten
+  them only in prose. If you don't know a value, look it up or use an obvious placeholder like
+  `[id of the grant call]`, never an invented value that looks real.
 
 ## Writing style
 
