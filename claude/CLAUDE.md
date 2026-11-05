@@ -39,6 +39,8 @@ coding. If they do, state them and proceed. A fix you can describe in one senten
   work. Before pushing to an existing PR, confirm it is still open (`gh pr view <n> --json state`);
   never push to a merged PR.
 - When a prerequisite branch exists, branch from it instead of waiting for it to merge.
+- Stage files by path. Never `git commit -a` or `git add -A`/`git add .`: worktree setup may copy my
+  local configs (e.g. `.codex/config.toml`, env files) into the checkout.
 
 ## PR review feedback
 
